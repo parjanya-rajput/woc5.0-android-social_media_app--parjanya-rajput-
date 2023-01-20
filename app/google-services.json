@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "645410495036",
+    "firebase_url": "https://mingle-aa38e-default-rtdb.firebaseio.com",
+    "project_id": "mingle-aa38e",
+    "storage_bucket": "mingle-aa38e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:645410495036:android:473848b252edb3f252c139",
+        "android_client_info": {
+          "package_name": "com.example.mingle"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "645410495036-9mka7pgas1k14agc4vf9odh27imencts.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.mingle",
+            "certificate_hash": "facd586735b9ac099580a9a717085f30a72c71b2"
+          }
+        },
+        {
+          "client_id": "645410495036-8aip2lra7sn0grte375f6sjhdqk61fij.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDNMqCSD71iP1wSEqKtA-6GFXVYSmfxs4I"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "645410495036-8aip2lra7sn0grte375f6sjhdqk61fij.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
