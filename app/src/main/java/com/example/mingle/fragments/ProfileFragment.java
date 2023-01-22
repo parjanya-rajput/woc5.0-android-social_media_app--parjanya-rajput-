@@ -13,12 +13,14 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.mingle.Adapter.PhotoAdapter;
 import com.example.mingle.EditProfile;
 import com.example.mingle.Model.Post;
 import com.example.mingle.Model.User;
 import com.example.mingle.R;
+import com.example.mingle.StartActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -39,7 +41,7 @@ public class ProfileFragment extends Fragment {
     private List<Post> myPhotoList;
 
     private CircleImageView image_profile;
-    private ImageView options;
+    private Button logOut;
     private TextView posts;
     private TextView following;
     private TextView followers;
@@ -64,8 +66,8 @@ public class ProfileFragment extends Fragment {
         profileId = fUser.getUid();
 
         image_profile = view.findViewById(R.id.image_profile);
-        options = view.findViewById(R.id.options);
         posts = view.findViewById(R.id.posts);
+        logOut = view.findViewById(R.id.log_out);
         followers = view.findViewById(R.id.follower_count);
         following = view.findViewById(R.id.following_count);
         fullName = view.findViewById(R.id.fullName);
@@ -84,6 +86,15 @@ public class ProfileFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 startActivity(new Intent(getContext(), EditProfile.class));
+            }
+        });
+
+        logOut.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                FirebaseAuth.getInstance().signOut();
+                Toast.makeText(getContext(), "Log Out Success!", Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(getContext(), StartActivity.class));
             }
         });
 

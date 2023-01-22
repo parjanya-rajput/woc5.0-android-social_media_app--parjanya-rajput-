@@ -119,7 +119,6 @@ public class EditProfile extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 updateProfile();
-                uploadImage();
                 startActivity(new Intent(EditProfile.this, ProfileFragment.class));
             }
         });
@@ -139,6 +138,7 @@ public class EditProfile extends AppCompatActivity {
     private void uploadImage() {
         ProgressDialog pd = new ProgressDialog(this);
         pd.setMessage("Uploading pfp....");
+        pd.show();
 
         if(imageUri != null){
 

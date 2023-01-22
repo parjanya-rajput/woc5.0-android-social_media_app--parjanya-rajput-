@@ -70,6 +70,19 @@ public class PostActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 imageChooser();
+                if(imageUri != null) {
+                    imageAdded.setVisibility(View.VISIBLE);
+                    description.setVisibility(View.VISIBLE);
+                    selectImage.setVisibility(View.GONE);
+                    takeImage.setVisibility(View.GONE);
+                }
+            }
+        });
+
+        takeImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+//                captureImage();
                 imageAdded.setVisibility(View.VISIBLE);
                 description.setVisibility(View.VISIBLE);
                 selectImage.setVisibility(View.GONE);
@@ -83,6 +96,10 @@ public class PostActivity extends AppCompatActivity {
             }
         });
     }
+
+//    private void captureImage() {
+//        Intent camera_intent
+//    }
 
     private void upload() {
 

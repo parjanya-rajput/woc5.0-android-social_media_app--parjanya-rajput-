@@ -26,6 +26,8 @@
         android:layout_height="wrap_content"
         android:background="@drawable/button_bg"
         android:text="@string/log_in"
+        android:layout_marginRight="15dp"
+        android:layout_marginLeft="15dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/logo_img" />
@@ -35,6 +37,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/button_bg"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
         android:text="@string/sign_in"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"

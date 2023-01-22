@@ -29,14 +29,7 @@
                     android:textStyle="bold"
                     android:id="@+id/username"
                     android:textColor="@color/color_primary_dark"/>
-                
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/options"
-                    android:src="@drawable/ic_options"
-                    android:layout_alignParentEnd="true"
-                    android:layout_marginEnd="15dp"/>
+
 
             </RelativeLayout>
         </Toolbar>
@@ -201,6 +194,15 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/recycler_view_pictures"/>
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="20dp"
+                android:id="@+id/log_out"
+                android:text="LOG OUT"/>
+
         </LinearLayout>
     </ScrollView>
 
