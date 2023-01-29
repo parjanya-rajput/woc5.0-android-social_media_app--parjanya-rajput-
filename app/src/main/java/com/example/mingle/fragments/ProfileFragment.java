@@ -1,10 +1,12 @@
 package com.example.mingle.fragments;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
@@ -17,6 +19,7 @@ import android.widget.Toast;
 
 import com.example.mingle.Adapter.PhotoAdapter;
 import com.example.mingle.EditProfile;
+import com.example.mingle.FollowersActivity;
 import com.example.mingle.Model.Post;
 import com.example.mingle.Model.User;
 import com.example.mingle.R;
@@ -30,6 +33,9 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -38,7 +44,7 @@ public class ProfileFragment extends Fragment {
 
     private RecyclerView recyclerView;
     private PhotoAdapter photoAdapter;
-    private List<Post> myPhotoList;
+    private List<Post> myPosts;
 
     private CircleImageView image_profile;
     private Button logOut;
@@ -63,7 +69,14 @@ public class ProfileFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
 
         fUser = FirebaseAuth.getInstance().getCurrentUser();
-        profileId = fUser.getUid();
+
+        String data = getContext().getSharedPreferences("Profile", Context.MODE_PRIVATE).getString("profileId","none");
+
+        if(data.equals("none")){
+            profileId = fUser.getUid();
+        } else {
+            profileId = data;
+        }
 
         image_profile = view.findViewById(R.id.image_profile);
         posts = view.findViewById(R.id.posts);
@@ -75,17 +88,52 @@ public class ProfileFragment extends Fragment {
         bio = view.findViewById(R.id.bio);
         my_pictures = view.findViewById(R.id.my_pictures);
         editProfile = view.findViewById(R.id.edit_profile);
-        
+
+        myPhotos();
+
+        recyclerView = view.findViewById(R.id.recycler_view_pictures);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2));
+
+        myPosts = new ArrayList<>();
+        photoAdapter = new PhotoAdapter(getContext(), myPosts);
+        recyclerView.setAdapter(photoAdapter);
+
+
         userInfo();
 
         getFollowersAndFollowingCount();
 
         getPostCount();
 
-        editProfile.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        if(profileId != fUser.getUid()){
+            logOut.setVisibility(View.GONE);
+        }
+
+        if (profileId.equals(fUser.getUid())){
+            editProfile.setText("Edit Profile");
+        } else {
+            followingStatus();
+        }
+
+        editProfile.setOnClickListener(view1 -> {
+            String btnText = editProfile.getText().toString();
+            if(btnText.equals("Edit Profile")){
                 startActivity(new Intent(getContext(), EditProfile.class));
+            } else {
+                if (btnText.equals("Follow")){
+                    FirebaseDatabase.getInstance().getReference().child("Follow").child(fUser.getUid())
+                            .child("Following").child(profileId).setValue(true);
+
+                    FirebaseDatabase.getInstance().getReference().child("Follow").child(profileId)
+                            .child("Followers").child(fUser.getUid()).setValue(true);
+                } else {
+                    FirebaseDatabase.getInstance().getReference().child("Follow").child(fUser.getUid())
+                            .child("Following").child(profileId).removeValue();
+
+                    FirebaseDatabase.getInstance().getReference().child("Follow").child(profileId)
+                            .child("Followers").child(fUser.getUid()).removeValue();
+                }
             }
         });
 
@@ -100,6 +148,49 @@ public class ProfileFragment extends Fragment {
 
         return view;
 
+    }
+
+    private void myPhotos() {
+        FirebaseDatabase.getInstance().getReference().child("Posts").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                myPosts.clear();
+                for(DataSnapshot snapshot1 : snapshot.getChildren()){
+                    Post post = snapshot1.getValue(Post.class);
+
+                    if (post.getPublisher().equals(profileId)){
+                        myPosts.add(post);
+                    }
+                }
+
+                Collections.reverse(myPosts);
+                photoAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
+    private void followingStatus() {
+        FirebaseDatabase.getInstance().getReference().child("Follow").child(fUser.getUid()).child("Following")
+                .addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        if(snapshot.child(profileId).exists()){
+                            editProfile.setText("Following");
+                        } else {
+                            editProfile.setText("Follow");
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
     }
 
     private void getPostCount() {

@@ -4,11 +4,18 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
+import androidx.core.content.FileProvider;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -32,7 +39,11 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.StorageTask;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.List;
 
@@ -79,16 +90,15 @@ public class PostActivity extends AppCompatActivity {
             }
         });
 
-        takeImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-//                captureImage();
-                imageAdded.setVisibility(View.VISIBLE);
-                description.setVisibility(View.VISIBLE);
-                selectImage.setVisibility(View.GONE);
-                takeImage.setVisibility(View.GONE);
-            }
-        });
+//        takeImage.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                imageAdded.setVisibility(View.VISIBLE);
+//                description.setVisibility(View.VISIBLE);
+//                selectImage.setVisibility(View.GONE);
+//                takeImage.setVisibility(View.GONE);
+//            }
+//        });
         post.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -97,17 +107,12 @@ public class PostActivity extends AppCompatActivity {
         });
     }
 
-//    private void captureImage() {
-//        Intent camera_intent
-//    }
-
     private void upload() {
 
-        ProgressDialog pd = new ProgressDialog(this);
-        pd.setMessage("Uploading...");
-        pd.show();
-
         if (imageUri != null) {
+            ProgressDialog pd = new ProgressDialog(this);
+            pd.setMessage("Uploading...");
+            pd.show();
             StorageReference filePath = FirebaseStorage.getInstance().getReference("Posts").child(System.currentTimeMillis() + "." + getFileExtension(imageUri));
             StorageTask uploadtask = filePath.putFile(imageUri);
             uploadtask.continueWithTask(new Continuation() {
@@ -188,6 +193,7 @@ public class PostActivity extends AppCompatActivity {
                         catch (IOException e) {
                             e.printStackTrace();
                         }
+                        imageAdded.setScaleType(ImageView.ScaleType.FIT_XY);
                         imageAdded.setImageBitmap(selectedImageBitmap);
                     }
                 }

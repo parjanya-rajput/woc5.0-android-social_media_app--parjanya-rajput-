@@ -1,6 +1,7 @@
 package com.example.mingle.Adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +11,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.mingle.CommentActivity;
 import com.example.mingle.Model.Post;
 import com.example.mingle.Model.User;
 import com.example.mingle.R;
@@ -74,6 +76,31 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
 
         isLiked(post.getPostId(), holder.like);
         likeCount(post.getPostId(), holder.likesCount);
+        getComment(post.getPostId(), holder.commentCount);
+
+        holder.more.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                FirebaseDatabase.getInstance().getReference().child("Posts").child(post.getPostId()).addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        User user = snapshot.getValue(User.class);
+                        String imageUrl = user.getImageUrl();
+                        Intent intent = new Intent(Intent.ACTION_SEND);
+                        intent.setType("text/plain");
+                        intent.putExtra(Intent.EXTRA_TEXT,"Check out this post I found on a Cool App called MINIOWITTER!");
+                        intent.putExtra(Intent.EXTRA_TEXT, imageUrl);
+                        mContext.startActivity(Intent.createChooser(intent, "Share Now!!"));
+
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
+            }
+        });
 
         holder.like.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -87,7 +114,28 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
                 }
             }
         });
+
+        holder.comment.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(mContext, CommentActivity.class);
+                intent.putExtra("postId", post.getPostId());
+                intent.putExtra("authorId", post.getPublisher());
+                mContext.startActivity(intent);
+            }
+        });
+
+        holder.commentCount.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(mContext, CommentActivity.class);
+                intent.putExtra("postId", post.getPostId());
+                intent.putExtra("authorId", post.getPublisher());
+                mContext.startActivity(intent);
+            }
+        });
     }
+
 
     @Override
     public int getItemCount() {
@@ -153,6 +201,21 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         textView.setText(snapshot.getChildrenCount() + " likes");
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
+    }
+
+    private void getComment(String postId, TextView textView){
+        FirebaseDatabase.getInstance().getReference().child("Comments").child(postId)
+                .addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        textView.setText("View all " + snapshot.getChildrenCount() + " comments");
                     }
 
                     @Override

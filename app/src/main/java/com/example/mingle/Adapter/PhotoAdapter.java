@@ -20,6 +20,10 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder> 
     private Context mContext;
     private List<Post> mPosts;
 
+    public PhotoAdapter(Context mContext, List<Post> mPosts) {
+        this.mContext = mContext;
+        this.mPosts = mPosts;
+    }
 
     @NonNull
     @Override

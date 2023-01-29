@@ -13,9 +13,9 @@
         android:icon="@drawable/ic_add"
         android:title=""/>
 
-    <item android:id="@+id/nav_favourite"
-        android:icon="@drawable/ic_favourite"
-        android:title=""/>
+<!--    <item android:id="@+id/nav_favourite"-->
+<!--        android:icon="@drawable/ic_favourite"-->
+<!--        android:title=""/>-->
 
     <item android:id="@+id/nav_profile"
         android:icon="@drawable/ic_person"

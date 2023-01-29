@@ -2,9 +2,13 @@ package com.example.mingle;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.MenuItem;
 
@@ -26,6 +30,12 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
+                == PackageManager.PERMISSION_DENIED){
+            ActivityCompat.requestPermissions(MainActivity.this, new String[] {Manifest.permission.CAMERA}, 200);
+        }
+
+
         bottomNavigationView = findViewById(R.id.bottom_navigation);
 
         bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
@@ -39,9 +49,9 @@ public class MainActivity extends AppCompatActivity {
                     case R.id.nav_search:
                         selectorFragment = new SearchFragment();
                         break;
-                    case R.id.nav_favourite:
-                        selectorFragment = new NotificationFragment();
-                        break;
+//                    case R.id.nav_favourite:
+//                        selectorFragment = new NotificationFragment();
+//                        break;
                     case R.id.nav_add:
                         selectorFragment = null;
                         startActivity(new Intent(MainActivity.this, PostActivity.class));
@@ -59,7 +69,17 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        Bundle intent = getIntent().getExtras();
+        if (intent != null){
+            String profileId = intent.getString("publisherId");
 
-        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new HomeFragment()).commit();
+            getSharedPreferences("Profile", MODE_PRIVATE).edit().putString("profileId", profileId).apply();
+
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,new ProfileFragment()).commit();
+        } else {
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new HomeFragment()).commit();
+
+        }
+
     }
 }

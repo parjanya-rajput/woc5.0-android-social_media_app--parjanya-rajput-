@@ -54,6 +54,8 @@ public class EditProfile extends AppCompatActivity {
     private StorageTask uploadTask;
     private StorageReference storageRef;
 
+    int SELECT_PICTURE = 200;
+
 
     FirebaseUser fUser;
 
@@ -103,7 +105,6 @@ public class EditProfile extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 imageChooser();
-                uploadImage();
             }
         });
 
@@ -111,7 +112,6 @@ public class EditProfile extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 imageChooser();
-                uploadImage();
             }
         });
 
@@ -135,45 +135,6 @@ public class EditProfile extends AppCompatActivity {
                 .updateChildren(map);
     }
 
-    private void uploadImage() {
-        ProgressDialog pd = new ProgressDialog(this);
-        pd.setMessage("Uploading pfp....");
-        pd.show();
-
-        if(imageUri != null){
-
-            StorageReference fileRef = storageRef.child(System.currentTimeMillis() + ".jpeg");
-
-            uploadTask = fileRef.putFile(imageUri);
-            uploadTask.continueWithTask(new Continuation() {
-                @Override
-                public Object then(@NonNull Task task) throws Exception {
-                    if (!task.isSuccessful()){
-                        throw task.getException();
-                    }
-
-                    return fileRef.getDownloadUrl();
-                }
-            }).addOnCompleteListener(new OnCompleteListener<Uri>() {
-                @Override
-                public void onComplete(@NonNull Task<Uri> task) {
-                    if(task.isSuccessful()) {
-                        Uri downloadUri = task.getResult();
-                        String url = downloadUri.toString();
-
-                        FirebaseDatabase.getInstance().getReference().child("Users").child(fUser.getUid())
-                                .child("imageUrl").setValue(url);
-
-                        pd.dismiss();
-                        Toast.makeText(EditProfile.this,"Upload Success!",Toast.LENGTH_SHORT).show();
-                    }else {
-                        Toast.makeText(EditProfile.this,"Upload Failed!",Toast.LENGTH_SHORT).show();
-                    }
-                }
-            });
-        }
-
-    }
 
     private void imageChooser()
     {
@@ -181,33 +142,52 @@ public class EditProfile extends AppCompatActivity {
         i.setType("image/*");
         i.setAction(Intent.ACTION_GET_CONTENT);
 
-        launchSomeActivity.launch(i);
+        startActivityForResult(Intent.createChooser(i, "Select Picture"),SELECT_PICTURE);
+
     }
-    ActivityResultLauncher<Intent> launchSomeActivity
-            = registerForActivityResult(
-            new ActivityResultContracts
-                    .StartActivityForResult(),
-            result -> {
-                if (result.getResultCode()
-                        == Activity.RESULT_OK) {
-                    Intent data = result.getData();
-                    // do your operation from here....
-                    imageUri = data.getData();
-                    if (data != null
-                            && data.getData() != null) {
-                        Uri selectedImageUri = data.getData();
-                        Bitmap selectedImageBitmap = null;
-                        try {
-                            selectedImageBitmap
-                                    = MediaStore.Images.Media.getBitmap(
-                                    this.getContentResolver(),
-                                    selectedImageUri);
+
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if(data != null){
+            if (data.getData() != null){
+                imageUri = data.getData();
+                ProgressDialog pd = new ProgressDialog(this);
+                pd.setMessage("Uploading pfp....");
+                pd.show();
+
+                StorageReference fileRef = storageRef.child(System.currentTimeMillis() + ".jpeg");
+
+                uploadTask = fileRef.putFile(imageUri);
+                uploadTask.continueWithTask(new Continuation() {
+                    @Override
+                    public Object then(@NonNull Task task) throws Exception {
+                        if (!task.isSuccessful()){
+                            throw task.getException();
                         }
-                        catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                        imageProfile.setImageBitmap(selectedImageBitmap);
+
+                        return fileRef.getDownloadUrl();
                     }
-                }
-            });
+                }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Uri> task) {
+                        if(task.isSuccessful()) {
+                            Uri downloadUri = task.getResult();
+                            String url = downloadUri.toString();
+
+                            FirebaseDatabase.getInstance().getReference().child("Users").child(fUser.getUid())
+                                    .child("imageUrl").setValue(url);
+
+                            pd.dismiss();
+                            Toast.makeText(EditProfile.this,"Upload Success!",Toast.LENGTH_SHORT).show();
+                        }else {
+                            Toast.makeText(EditProfile.this,"Upload Failed!",Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+            } else {
+            Toast.makeText(EditProfile.this, uploadTask.getException().getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
 }
