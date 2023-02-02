@@ -33,6 +33,7 @@ public class FollowersActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_followers);
+        getSupportActionBar().setTitle("MinioWitter");
 
         Intent intent = getIntent();
         id = intent.getStringExtra("id");

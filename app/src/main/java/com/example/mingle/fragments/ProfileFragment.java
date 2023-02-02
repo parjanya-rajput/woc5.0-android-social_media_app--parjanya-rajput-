@@ -1,10 +1,12 @@
 package com.example.mingle.fragments;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -22,6 +24,7 @@ import com.example.mingle.EditProfile;
 import com.example.mingle.FollowersActivity;
 import com.example.mingle.Model.Post;
 import com.example.mingle.Model.User;
+import com.example.mingle.PostActivity;
 import com.example.mingle.R;
 import com.example.mingle.StartActivity;
 import com.google.firebase.auth.FirebaseAuth;

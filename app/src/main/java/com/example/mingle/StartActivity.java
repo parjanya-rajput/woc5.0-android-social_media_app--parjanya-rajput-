@@ -32,6 +32,8 @@ public class StartActivity extends AppCompatActivity {
         signIn = findViewById(R.id.signup);
         logIn = findViewById(R.id.login);
 
+        getSupportActionBar().setTitle("MinioWitter");
+
         signIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

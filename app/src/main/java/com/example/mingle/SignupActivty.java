@@ -62,6 +62,8 @@ public class SignupActivty extends AppCompatActivity {
 
         pd = new ProgressDialog(this);
 
+        getSupportActionBar().setTitle("MinioWitter");
+
         loginUser.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

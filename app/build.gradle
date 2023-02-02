@@ -52,5 +52,9 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
 
+    implementation 'io.github.amrdeveloper:reactbutton:2.1.0'
     implementation "com.airbnb.android:lottie:5.2.0"
+
+    implementation 'com.google.android.gms:play-services-auth:20.4.1'
+
 }

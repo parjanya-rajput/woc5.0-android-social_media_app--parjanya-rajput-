@@ -18,12 +18,15 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import android.text.method.HideReturnsTransformationMethod;
+import android.text.method.PasswordTransformationMethod;
 
 public class LoginActivity extends AppCompatActivity {
     private EditText email;
     private EditText password;
     private TextView registerUser;
     private Button login;
+    private Button passwordToggle;
 
     private FirebaseAuth mAuth;
 
@@ -36,8 +39,18 @@ public class LoginActivity extends AppCompatActivity {
         password = findViewById(R.id.password);
         login = findViewById(R.id.login);
         registerUser = findViewById(R.id.register);
+        passwordToggle = findViewById(R.id.password_visibility);
+        passwordToggle.setVisibility(View.GONE);
 
         mAuth = FirebaseAuth.getInstance();
+        getSupportActionBar().setTitle("MinioWitter");
+
+        password.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                passwordToggle.setVisibility(View.VISIBLE);
+            }
+        });
 
         registerUser.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -57,6 +70,19 @@ public class LoginActivity extends AppCompatActivity {
                     Toast.makeText(LoginActivity.this, "All fields are mandatory!", Toast.LENGTH_SHORT).show();
                 } else {
                     logInUser(txt_email, txt_password);
+                }
+            }
+        });
+
+        passwordToggle.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (passwordToggle.getText().toString().equals("SHOW")){
+                    password.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
+                    passwordToggle.setText("HIDE");
+                } else {
+                    password.setTransformationMethod(PasswordTransformationMethod.getInstance());
+                    passwordToggle.setText("SHOW");
                 }
             }
         });

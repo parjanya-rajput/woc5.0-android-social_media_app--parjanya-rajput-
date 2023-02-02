@@ -13,52 +13,67 @@
         android:layout_width="314dp"
         android:layout_height="248dp"
         android:src="@drawable/logo" />
-    
-    <EditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/edit_text_bg"
-        android:layout_marginTop="15dp"
-        android:hint="@string/username"
-        android:padding="10dp"
-        android:id="@+id/username"/>
 
     <EditText
+        android:id="@+id/username"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/edit_text_bg"
         android:layout_marginTop="15dp"
+        android:background="@drawable/edit_text_bg"
+        android:hapticFeedbackEnabled="true"
+        android:hint="@string/username"
+        android:minHeight="48dp"
+        android:padding="10dp" />
+
+    <EditText
+        android:id="@+id/name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:background="@drawable/edit_text_bg"
+        android:hapticFeedbackEnabled="true"
         android:hint="@string/name"
-        android:padding="10dp"
-        android:id="@+id/name"/>
+        android:minHeight="48dp"
+        android:padding="10dp" />
+
     <EditText
+        android:id="@+id/email"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/edit_text_bg"
         android:layout_marginTop="15dp"
+        android:background="@drawable/edit_text_bg"
+        android:hapticFeedbackEnabled="true"
         android:hint="@string/email"
-        android:padding="10dp"
-        android:id="@+id/email"/>
+        android:minHeight="48dp"
+        android:padding="10dp" />
+
     <EditText
+        android:id="@+id/password"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/edit_text_bg"
         android:layout_marginTop="15dp"
+        android:background="@drawable/edit_text_bg"
+        android:hapticFeedbackEnabled="true"
         android:hint="@string/password"
-        android:padding="10dp"
-        android:id="@+id/password"/>
+        android:inputType="textPassword"
+        android:minHeight="48dp"
+        android:padding="10dp" />
+
     <EditText
+        android:id="@+id/repassword"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/edit_text_bg"
         android:layout_marginTop="15dp"
+        android:background="@drawable/edit_text_bg"
+        android:hapticFeedbackEnabled="true"
         android:hint="@string/type_password_again"
-        android:padding="10dp"
-        android:id="@+id/repassword"/>
+        android:minHeight="48dp"
+        android:padding="10dp" />
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@drawable/button_bg"
+        android:hapticFeedbackEnabled="true"
         android:layout_marginTop="15dp"
         android:padding="10dp"
         android:text="@string/register"
@@ -67,6 +82,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:hapticFeedbackEnabled="true"
         android:text="@string/already_a_user_login"
         android:layout_marginTop="15dp"
         android:id="@+id/login_user"/>

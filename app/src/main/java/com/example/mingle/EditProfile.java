@@ -1,17 +1,13 @@
 package com.example.mingle;
 
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -34,11 +30,9 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.StorageTask;
 import com.squareup.picasso.Picasso;
 
-import java.io.IOException;
 import java.util.HashMap;
 
 import de.hdodenhof.circleimageview.CircleImageView;
-import io.grpc.Context;
 
 public class EditProfile extends AppCompatActivity {
 
@@ -75,6 +69,7 @@ public class EditProfile extends AppCompatActivity {
         fUser = FirebaseAuth.getInstance().getCurrentUser();
 
         storageRef = FirebaseStorage.getInstance().getReference().child("Uploads");
+        getSupportActionBar().setTitle("MinioWitter");
 
         FirebaseDatabase.getInstance().getReference().child("Users").child(fUser.getUid())
                 .addValueEventListener(new ValueEventListener() {

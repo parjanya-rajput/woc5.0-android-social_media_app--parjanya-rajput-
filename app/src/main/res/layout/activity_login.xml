@@ -15,26 +15,45 @@
         android:src="@drawable/logo" />
 
     <EditText
+        android:id="@+id/email"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/edit_text_bg"
         android:layout_marginTop="15dp"
+        android:hapticFeedbackEnabled="true"
+        android:background="@drawable/edit_text_bg"
         android:hint="@string/email"
-        android:padding="10dp"
-        android:id="@+id/email"/>
+        android:minHeight="48dp"
+        android:padding="10dp" />
+
     <EditText
+        android:id="@+id/password"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/edit_text_bg"
         android:layout_marginTop="15dp"
+        android:background="@drawable/edit_text_bg"
+        android:hapticFeedbackEnabled="true"
         android:hint="@string/password"
-        android:padding="10dp"
-        android:id="@+id/password"/>
+        android:inputType="textPassword"
+        android:minHeight="48dp"
+        android:padding="10dp" />
+
+    <Button
+        android:id="@+id/password_visibility"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:hapticFeedbackEnabled="true"
+        android:backgroundTint="@color/color_accent"
+        android:textColor="@color/color_primary_dark"
+        android:padding="5dp"
+        android:text="SHOW" />
+
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@drawable/button_bg"
         android:layout_marginTop="15dp"
+        android:hapticFeedbackEnabled="true"
         android:padding="10dp"
         android:text="@string/log_in"
         android:textSize="18sp"
@@ -42,6 +61,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:hapticFeedbackEnabled="true"
         android:text="@string/new_to_miniowitter_register"
         android:layout_marginTop="15dp"
         android:id="@+id/register"/>

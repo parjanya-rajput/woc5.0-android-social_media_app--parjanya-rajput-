@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Miniowitter</string>
+    <string name="app_name">MinioWitter</string>
     <string name="log_in">LOG IN</string>
     <string name="sign_in">SIGN IN</string>
     <string name="username">Username</string>
