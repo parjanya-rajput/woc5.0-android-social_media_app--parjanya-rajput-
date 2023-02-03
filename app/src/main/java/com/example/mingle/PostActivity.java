@@ -47,6 +47,8 @@ public class PostActivity extends AppCompatActivity {
     private Uri imageUri;
     private String imageUrl;
     private int flag = 0;
+    private int SELECT_PICTURE = 100;
+    private int CAPTURE_IMAGE = 200;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,7 +75,7 @@ public class PostActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 imageChooser();
-                if(imageUri != null) {
+                if (imageUri != null) {
                     imageAdded.setVisibility(View.VISIBLE);
                     description.setVisibility(View.VISIBLE);
                     selectImage.setVisibility(View.GONE);
@@ -95,7 +97,7 @@ public class PostActivity extends AppCompatActivity {
         post.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (flag == 1){
+                if (flag == 1) {
                     upload2();
                 } else {
                     upload();
@@ -108,19 +110,35 @@ public class PostActivity extends AppCompatActivity {
     private void imageCapture() {
         Intent camera_intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 
-        startActivityForResult(camera_intent, 100);
+        startActivityForResult(camera_intent, CAPTURE_IMAGE);
     }
+
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        // Match the request 'pic id with requestCode
         // BitMap is data structure of image file which store the image in memory
-        Bitmap photo = (Bitmap) data.getExtras().get("data");
-        imageAdded.setScaleType(ImageView.ScaleType.FIT_XY);
-        // Set the image in imageview for display
-        imageAdded.setImageBitmap(photo);
-        firebaseUploadBitmap(photo);
-        flag = 1;
+        if (resultCode == RESULT_OK) {
+
+            // compare the resultCode with the
+            // SELECT_PICTURE constant
+            if (requestCode == SELECT_PICTURE) {
+                // Get the url of the image from data
+                imageUri = data.getData();
+                if (null != imageUri) {
+                    // update the preview image in the layout
+                    imageAdded.setImageURI(imageUri);
+                    imageAdded.setScaleType(ImageView.ScaleType.FIT_XY);
+                }
+            } else if(requestCode == CAPTURE_IMAGE) {
+                Bitmap photo = (Bitmap) data.getExtras().get("data");
+                imageAdded.setScaleType(ImageView.ScaleType.FIT_XY);
+                // Set the image in imageview for display
+                imageAdded.setImageBitmap(photo);
+                firebaseUploadBitmap(photo);
+                flag = 1;
+            }
+        }
     }
+
     private void firebaseUploadBitmap(Bitmap bitmap) {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
@@ -138,8 +156,7 @@ public class PostActivity extends AppCompatActivity {
                 Uri downloadUri = task.getResult();
                 imageUrl = downloadUri.toString();
             } else {
-                // Handle failures
-                // ...
+                Toast.makeText(this,task.getException().toString(),Toast.LENGTH_SHORT);
             }
         });
 
@@ -156,7 +173,7 @@ public class PostActivity extends AppCompatActivity {
             uploadtask.continueWithTask(new Continuation() {
                 @Override
                 public Object then(@NonNull Task task) throws Exception {
-                    if (!task.isSuccessful()){
+                    if (!task.isSuccessful()) {
                         throw task.getException();
                     }
                     return filePath.getDownloadUrl();
@@ -170,7 +187,7 @@ public class PostActivity extends AppCompatActivity {
                     DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("Posts");
                     String postId = ref.push().getKey();
 
-                    HashMap<String , Object> map = new HashMap<>();
+                    HashMap<String, Object> map = new HashMap<>();
                     map.put("postId", postId);
                     map.put("imageUrl", imageUrl);
                     map.put("description", description.getText().toString());
@@ -180,7 +197,7 @@ public class PostActivity extends AppCompatActivity {
 
                     pd.dismiss();
                     startActivity(new Intent(PostActivity.this, MainActivity.class));
-                    Toast.makeText(PostActivity.this,"Upload Success",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(PostActivity.this, "Upload Success", Toast.LENGTH_SHORT).show();
                     finish();
 
                 }
@@ -208,7 +225,7 @@ public class PostActivity extends AppCompatActivity {
 
             DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("Posts");
             String postId = ref.push().getKey();
-            HashMap<String , Object> map = new HashMap<>();
+            HashMap<String, Object> map = new HashMap<>();
             map.put("postId", postId);
             map.put("imageUrl", imageUrl);
             map.put("description", description.getText().toString());
@@ -217,48 +234,19 @@ public class PostActivity extends AppCompatActivity {
             ref.child(postId).setValue(map);
             pd.dismiss();
             startActivity(new Intent(PostActivity.this, MainActivity.class));
-            Toast.makeText(PostActivity.this,"Upload Success",Toast.LENGTH_SHORT).show();
+            Toast.makeText(PostActivity.this, "Upload Success", Toast.LENGTH_SHORT).show();
             finish();
         } else {
-            Toast.makeText(this,"Something went Wrong! Please try again..",Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Something went Wrong! Please try again..", Toast.LENGTH_SHORT).show();
         }
     }
 
 
-    private void imageChooser()
-    {
+    private void imageChooser() {
         Intent i = new Intent();
         i.setType("image/*");
         i.setAction(Intent.ACTION_GET_CONTENT);
 
-        launchSomeActivity.launch(i);
+        startActivityForResult(Intent.createChooser(i, "Select Picture"), SELECT_PICTURE);
     }
-    ActivityResultLauncher<Intent> launchSomeActivity
-            = registerForActivityResult(
-            new ActivityResultContracts
-                    .StartActivityForResult(),
-            result -> {
-                if (result.getResultCode()
-                        == Activity.RESULT_OK) {
-                    Intent data = result.getData();
-                    // do your operation from here....
-                    imageUri = data.getData();
-                    if (data != null
-                            && data.getData() != null) {
-                        Uri selectedImageUri = data.getData();
-                        Bitmap selectedImageBitmap = null;
-                        try {
-                            selectedImageBitmap
-                                    = MediaStore.Images.Media.getBitmap(
-                                    this.getContentResolver(),
-                                    selectedImageUri);
-                        }
-                        catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                        imageAdded.setScaleType(ImageView.ScaleType.FIT_XY);
-                        imageAdded.setImageBitmap(selectedImageBitmap);
-                    }
-                }
-            });
 }
