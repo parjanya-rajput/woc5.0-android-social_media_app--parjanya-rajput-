@@ -4,6 +4,7 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.FileProvider;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -11,6 +12,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Base64;
 import android.view.View;
@@ -33,7 +35,10 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.StorageTask;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 
 public class PostActivity extends AppCompatActivity {
@@ -47,8 +52,9 @@ public class PostActivity extends AppCompatActivity {
     private Uri imageUri;
     private String imageUrl;
     private int flag = 0;
-    private int SELECT_PICTURE = 100;
-    private int CAPTURE_IMAGE = 200;
+    private final int SELECT_PICTURE = 100;
+    private final int CAPTURE_IMAGE = 200;
+    String currentPhotoPath;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,53 +70,30 @@ public class PostActivity extends AppCompatActivity {
 
         getSupportActionBar().setTitle("MinioWitter");
 
-        close.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(PostActivity.this, MainActivity.class));
-                finish();
-            }
+        close.setOnClickListener(view -> {
+            startActivity(new Intent(PostActivity.this, MainActivity.class));
+            finish();
         });
-        selectImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                imageChooser();
-                if (imageUri != null) {
-                    imageAdded.setVisibility(View.VISIBLE);
-                    description.setVisibility(View.VISIBLE);
-                    selectImage.setVisibility(View.GONE);
-                    takeImage.setVisibility(View.GONE);
-                }
-            }
-        });
-
-        takeImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                imageCapture();
+        selectImage.setOnClickListener(view -> {
+            imageChooser();
+            if (imageUri != null) {
                 imageAdded.setVisibility(View.VISIBLE);
                 description.setVisibility(View.VISIBLE);
                 selectImage.setVisibility(View.GONE);
                 takeImage.setVisibility(View.GONE);
             }
         });
-        post.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (flag == 1) {
-                    upload2();
-                } else {
-                    upload();
-                }
-            }
+
+        takeImage.setOnClickListener(view -> {
+            dispatchTakePictureIntent();
+            imageAdded.setVisibility(View.VISIBLE);
+            description.setVisibility(View.VISIBLE);
+            selectImage.setVisibility(View.GONE);
+            takeImage.setVisibility(View.GONE);
         });
-    }
-
-
-    private void imageCapture() {
-        Intent camera_intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-
-        startActivityForResult(camera_intent, CAPTURE_IMAGE);
+        post.setOnClickListener(view -> {
+            upload();
+        });
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -129,38 +112,49 @@ public class PostActivity extends AppCompatActivity {
                     imageAdded.setScaleType(ImageView.ScaleType.FIT_XY);
                 }
             } else if(requestCode == CAPTURE_IMAGE) {
-                Bitmap photo = (Bitmap) data.getExtras().get("data");
                 imageAdded.setScaleType(ImageView.ScaleType.FIT_XY);
                 // Set the image in imageview for display
-                imageAdded.setImageBitmap(photo);
-                firebaseUploadBitmap(photo);
-                flag = 1;
+                imageAdded.setImageURI(imageUri);
             }
         }
     }
 
-    private void firebaseUploadBitmap(Bitmap bitmap) {
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
-        byte[] data = stream.toByteArray();
-        StorageReference filePath = FirebaseStorage.getInstance().getReference("Posts").child(System.currentTimeMillis() + ".png");
-        Task<Uri> urlTask = filePath.putBytes(data).continueWithTask(task -> {
-            if (!task.isSuccessful()) {
-                throw task.getException();
-            }
+    private File createImageFile() throws IOException {
+        // Create an image file name
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = "JPEG_" + timeStamp + "_";
+        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File image = File.createTempFile(
+                imageFileName,  /* prefix */
+                ".jpg",         /* suffix */
+                storageDir      /* directory */
+        );
 
-            // Continue with the task to get the download URL
-            return filePath.getDownloadUrl();
-        }).addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-                Uri downloadUri = task.getResult();
-                imageUrl = downloadUri.toString();
-            } else {
-                Toast.makeText(this,task.getException().toString(),Toast.LENGTH_SHORT);
-            }
-        });
-
+        // Save a file: path for use with ACTION_VIEW intents
+        currentPhotoPath = image.getAbsolutePath();
+        return image;
     }
+    private void dispatchTakePictureIntent() {
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        // Ensure that there's a camera activity to handle the intent
+            // Create the File where the photo should go
+            File photoFile = null;
+            try {
+                photoFile = createImageFile();
+            } catch (IOException ex) {
+                // Error occurred while creating the File
+            }
+            // Continue only if the File was successfully created
+            if (photoFile != null) {
+                imageUri = FileProvider.getUriForFile(this, "com.example.mingle.file-provider",
+                        photoFile);
+                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
+                startActivityForResult(takePictureIntent,CAPTURE_IMAGE);
+            } else {
+                Toast.makeText(this,"Failed",Toast.LENGTH_SHORT).show();
+            }
+    }
+
 
     private void upload() {
 
@@ -214,31 +208,6 @@ public class PostActivity extends AppCompatActivity {
 
     private String getFileExtension(Uri uri) {
         return MimeTypeMap.getSingleton().getExtensionFromMimeType(this.getContentResolver().getType(uri));
-    }
-
-    private void upload2() {
-
-        if (imageUrl != null) {
-            ProgressDialog pd = new ProgressDialog(this);
-            pd.setMessage("Uploading...");
-            pd.show();
-
-            DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("Posts");
-            String postId = ref.push().getKey();
-            HashMap<String, Object> map = new HashMap<>();
-            map.put("postId", postId);
-            map.put("imageUrl", imageUrl);
-            map.put("description", description.getText().toString());
-            map.put("publisher", FirebaseAuth.getInstance().getCurrentUser().getUid());
-
-            ref.child(postId).setValue(map);
-            pd.dismiss();
-            startActivity(new Intent(PostActivity.this, MainActivity.class));
-            Toast.makeText(PostActivity.this, "Upload Success", Toast.LENGTH_SHORT).show();
-            finish();
-        } else {
-            Toast.makeText(this, "Something went Wrong! Please try again..", Toast.LENGTH_SHORT).show();
-        }
     }
 
 
