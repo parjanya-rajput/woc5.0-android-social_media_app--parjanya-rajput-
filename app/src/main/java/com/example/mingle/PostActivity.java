@@ -109,10 +109,10 @@ public class PostActivity extends AppCompatActivity {
                 if (null != imageUri) {
                     // update the preview image in the layout
                     imageAdded.setImageURI(imageUri);
-                    imageAdded.setScaleType(ImageView.ScaleType.FIT_XY);
+//                    imageAdded.setScaleType(ImageView.ScaleType.FIT_XY);
                 }
             } else if(requestCode == CAPTURE_IMAGE) {
-                imageAdded.setScaleType(ImageView.ScaleType.FIT_XY);
+//                imageAdded.setScaleType(ImageView.ScaleType.FIT_XY);
                 // Set the image in imageview for display
                 imageAdded.setImageURI(imageUri);
             }
