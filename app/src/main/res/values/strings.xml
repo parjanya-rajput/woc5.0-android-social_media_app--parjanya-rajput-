@@ -16,4 +16,5 @@
     <string name="post">POST</string>
     <string name="search">Search</string>
     <string name="edit_profile">EDIT PROFILE</string>
+    <string name="register_using_google">Register using google</string>
 </resources>
