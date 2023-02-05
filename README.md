@@ -7,7 +7,7 @@ Features of App include:
 - Realtime Database used so posts are retrieved in realtime
 - Partial Nightmode
 
-Below are the Pictures of all activity
+Below are the some screenshots
 
 Sigin Page:
 
