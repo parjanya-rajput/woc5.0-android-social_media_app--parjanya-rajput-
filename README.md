@@ -18,4 +18,4 @@ Posts:
 ![MainActivity](https://user-images.githubusercontent.com/88159006/216823096-dd48d360-20e7-45ab-977c-77489f0ca9fe.png)
 
 
-Thank You
+Thank You MSTC for conducting W.O.C 5.0
