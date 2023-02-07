@@ -76,12 +76,10 @@ public class PostActivity extends AppCompatActivity {
         });
         selectImage.setOnClickListener(view -> {
             imageChooser();
-            if (imageUri != null) {
                 imageAdded.setVisibility(View.VISIBLE);
                 description.setVisibility(View.VISIBLE);
                 selectImage.setVisibility(View.GONE);
                 takeImage.setVisibility(View.GONE);
-            }
         });
 
         takeImage.setOnClickListener(view -> {
