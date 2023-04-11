@@ -13,15 +13,12 @@
         android:id="@+id/intro"
         app:lottie_autoPlay="true"
         app:lottie_loop="true"
-        android:layout_above="@id/icon"
         app:lottie_url="https://assets7.lottiefiles.com/packages/lf20_osdxlbqq.json"/>
 
-    <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:src="@drawable/icon"
-        android:id="@+id/icon"
-        android:layout_alignParentBottom="true"/>
-
-
+<!--    <ImageView-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="200dp"-->
+<!--        android:src="@drawable/icon"-->
+<!--        android:id="@+id/icon"-->
+<!--        android:layout_alignParentBottom="true"/>-->
 </RelativeLayout>

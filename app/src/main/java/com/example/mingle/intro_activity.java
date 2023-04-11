@@ -34,7 +34,7 @@ public class intro_activity extends AppCompatActivity {
                 startActivity(intent);
 
             }
-        }, 7000);
+        }, 5000);
 
     }
 }

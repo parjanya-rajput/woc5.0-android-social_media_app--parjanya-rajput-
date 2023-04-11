@@ -85,6 +85,7 @@ public class CommentActivity extends AppCompatActivity {
                     Toast.makeText(CommentActivity.this, "Add a Comment", Toast.LENGTH_SHORT);
                 } else {
                     putComment();
+                    addComment.setText("");
                 }
             }
         });
@@ -126,7 +127,7 @@ public class CommentActivity extends AppCompatActivity {
                         if(task.isSuccessful()) {
                             Toast.makeText(CommentActivity.this, "Comment Added", Toast.LENGTH_SHORT);
                             pd.dismiss();
-                            finish();
+//                            finish();
                         } else {
                             Toast.makeText(CommentActivity.this,task.getException().getMessage(), Toast.LENGTH_SHORT);
                         }

@@ -22,6 +22,7 @@ import android.widget.Toast;
 import com.example.mingle.Adapter.PhotoAdapter;
 import com.example.mingle.EditProfile;
 import com.example.mingle.FollowersActivity;
+import com.example.mingle.MainActivity;
 import com.example.mingle.Model.Post;
 import com.example.mingle.Model.User;
 import com.example.mingle.PostActivity;
@@ -265,4 +266,9 @@ public class ProfileFragment extends Fragment {
                     }
                 });
     }
+//    public void onBackPressed()
+//    {
+//        Intent intent = new Intent(getContext(), MainActivity.class);
+//        startActivity(intent);
+//    }
 }

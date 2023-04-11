@@ -1,5 +1,6 @@
 package com.example.mingle.fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -13,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
 import com.example.mingle.Adapter.PostAdapter;
+import com.example.mingle.MainActivity;
 import com.example.mingle.Model.Post;
 import com.example.mingle.R;
 import com.google.firebase.auth.FirebaseAuth;
@@ -49,6 +51,7 @@ public class HomeFragment extends Fragment {
         recyclerViewPosts.setAdapter(postAdapter);
 
         followingList = new ArrayList<>();
+//        onBackPressed();
 
         checkFollowingUsers();
 

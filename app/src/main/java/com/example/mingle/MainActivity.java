@@ -4,6 +4,7 @@ import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 import static android.os.Build.VERSION.SDK_INT;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -32,6 +33,12 @@ public class MainActivity extends AppCompatActivity {
 
     private BottomNavigationView bottomNavigationView;
     private Fragment selectorFragment;
+
+    @Override
+    public void onBackPressed() {
+        selectorFragment = new HomeFragment();
+        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,selectorFragment).commit();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

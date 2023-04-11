@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="color_primary">#455CDE</color>
-    <color name="color_primary_dark">#455CDE</color>
-    <color name="color_accent">#C2BDBF</color>
+    <color name="color_primary">#FFFFFFFF</color>
+    <color name="color_primary_dark">#FFFFFFFF</color>
+    <color name="color_accent">#FFFFFFFF</color>
     <color name="black">#FF000000</color>
+    <color name="username">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="darkGray">#5A5A5A</color>
 </resources>
